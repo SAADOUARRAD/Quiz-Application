@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/back1"
+    android:orientation="vertical"
+    tools:context=".quiz3">
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Question 3/5"
+        android:textSize="25sp"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"
+        android:gravity="center"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="10dp">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/img_4"/>
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Quel est le plus grand désert du monde ?"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginTop="20dp"
+            android:textStyle="bold"
+            android:textSize="25sp"/>
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp">
+
+            <RadioButton
+                android:id="@+id/rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sahara"
+                android:buttonTint="@color/colorPrimary"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:layout_marginBottom="15dp"/>
+
+            <RadioButton
+                android:id="@+id/rg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Gobi"
+                android:buttonTint="@color/colorPrimary"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:layout_marginBottom="15dp"/>
+
+            <RadioButton
+                android:id="@+id/rd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Antarctique"
+                android:buttonTint="@color/colorPrimary"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:layout_marginBottom="15dp"/>
+
+        </RadioGroup>
+
+        <!-- ➕ Texte reconnaissance vocale -->
+        <TextView
+            android:id="@+id/tvVoiceResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🎤 Dites votre réponse..."
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_marginBottom="5dp"/>
+
+        <!-- ➕ Bouton Micro -->
+        <Button
+            android:id="@+id/btnMic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🎤 Répondre par la voix"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="#9C27B0"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Next"
+            android:layout_margin="20dp"
+            android:background="@color/colorPrimary"
+            android:textSize="20sp"
+            android:textColor="@color/colorPrimaryDark"/>
+
+    </LinearLayout>
+</LinearLayout>
