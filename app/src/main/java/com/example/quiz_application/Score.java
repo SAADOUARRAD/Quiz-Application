@@ -16,6 +16,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.json.JSONObject;
+
 public class Score extends AppCompatActivity {
 
     ProgressBar pb;
@@ -55,8 +57,11 @@ public class Score extends AppCompatActivity {
         tvScore.setText(percentage + " %");
         pb.setProgress(percentage);
 
-        // Sauvegarder le score dans Firestore
+        // Sauvegarder dans Firestore
         saveScore();
+
+        // ➕ Envoyer score à FastAPI
+        sendScoreToApi();
 
         // Bouton Try Again
         btnTryAgain.setOnClickListener(v -> {
@@ -74,7 +79,7 @@ public class Score extends AppCompatActivity {
             finish();
         });
 
-        // ➕ Bouton Profil
+        // Bouton Profil
         btnProfile.setOnClickListener(v -> {
             startActivity(new Intent(this, ProfileActivity.class));
         });
@@ -96,5 +101,31 @@ public class Score extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    // ➕ Envoyer score à FastAPI
+    private void sendScoreToApi() {
+        if (mAuth.getCurrentUser() == null) return;
+
+        new Thread(() -> {
+            try {
+                JSONObject scoreData = new JSONObject();
+                scoreData.put("userId", mAuth.getCurrentUser().getUid());
+                scoreData.put("nom", mAuth.getCurrentUser().getEmail());
+                scoreData.put("score", score);
+
+                String response = ApiClient.post("/scores", scoreData);
+
+                runOnUiThread(() -> {
+                    if (response != null) {
+                        Toast.makeText(this, "Score envoyé à l'API ✅",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 }

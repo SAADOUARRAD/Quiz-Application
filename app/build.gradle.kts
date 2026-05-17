@@ -62,6 +62,9 @@ dependencies {
     // Glide
     implementation("com.github.bumptech.glide:glide:4.16.0")
 
-    // ➕ GPS
+    // GPS
     implementation("com.google.android.gms:play-services-location:21.0.1")
+
+    // ➕ HTTP Client pour FastAPI
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 }
