@@ -81,7 +81,34 @@
             android:textColor="#CCCCCC"
             android:textSize="16sp"/>
 
-        <!-- ➕ Localisation -->
+        <!-- ➕ Nouveau mot de passe -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nouveau mot de passe"
+            android:textColor="#FFC107"
+            android:textSize="14sp"
+            android:layout_marginTop="15dp"/>
+
+        <EditText
+            android:id="@+id/etNewPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nouveau mot de passe"
+            android:inputType="textPassword"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#888888"
+            android:backgroundTint="#FFC107"/>
+
+        <Button
+            android:id="@+id/btnChangePassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="🔑 Changer mot de passe"
+            android:backgroundTint="#607D8B"/>
+
+        <!-- Localisation -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -3,6 +3,7 @@ package com.example.quiz_application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.speech.tts.TextToSpeech;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -27,7 +28,11 @@ public class quiz4 extends AppCompatActivity {
     TextView tvVoiceResult;
 
     String CorrectResp = "France";
+    String question = "Quel pays a gagné la Coupe du Monde 2018 ? "
+            + "Les choix sont : France. Allemagne. Argentine.";
     int score = 0;
+
+    TextToSpeech tts;
 
     ActivityResultLauncher<Intent> voiceLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -35,20 +40,15 @@ public class quiz4 extends AppCompatActivity {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     ArrayList<String> matches = result.getData()
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-
                     if (matches != null && !matches.isEmpty()) {
                         String voiceText = matches.get(0).toLowerCase();
                         tvVoiceResult.setText("🎤 Vous avez dit : " + voiceText);
-
                         if (voiceText.contains("france")) {
                             score += 1;
-                            Toast.makeText(this, "✅ Bonne réponse !",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "✅ Bonne réponse!", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(this, "❌ Mauvaise réponse ! : " + CorrectResp,
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "❌ Mauvaise réponse! : " + CorrectResp, Toast.LENGTH_SHORT).show();
                         }
-
                         Intent i2 = new Intent(quiz4.this, quiz5.class);
                         i2.putExtra("score", score);
                         startActivity(i2);
@@ -77,15 +77,20 @@ public class quiz4 extends AppCompatActivity {
 
         score = getIntent().getIntExtra("score", 0);
 
+        // ➕ TTS automatique
+        tts = new TextToSpeech(this, status -> {
+            if (status == TextToSpeech.SUCCESS) {
+                tts.setLanguage(Locale.FRENCH);
+                tts.speak(question, TextToSpeech.QUEUE_FLUSH, null, null);
+            }
+        });
+
         button2.setOnClickListener(v -> {
             if (radioGroup.getCheckedRadioButtonId() == -1) {
-                Toast.makeText(this, "Choisissez une réponse SVP",
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Choisissez une réponse SVP", Toast.LENGTH_SHORT).show();
             } else {
                 rb = findViewById(radioGroup.getCheckedRadioButtonId());
-                if (rb.getText().toString().equals(CorrectResp)) {
-                    score += 1;
-                }
+                if (rb.getText().toString().equals(CorrectResp)) score += 1;
                 Intent i2 = new Intent(quiz4.this, quiz5.class);
                 i2.putExtra("score", score);
                 startActivity(i2);
@@ -99,15 +104,16 @@ public class quiz4 extends AppCompatActivity {
 
     private void startVoiceRecognition() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Dites votre réponse...");
-        try {
-            voiceLauncher.launch(intent);
-        } catch (Exception e) {
-            Toast.makeText(this, "Reconnaissance vocale non disponible",
-                    Toast.LENGTH_SHORT).show();
-        }
+        try { voiceLauncher.launch(intent); }
+        catch (Exception e) { Toast.makeText(this, "Non disponible", Toast.LENGTH_SHORT).show(); }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (tts != null) { tts.stop(); tts.shutdown(); }
+        super.onDestroy();
     }
 }

@@ -3,6 +3,7 @@ package com.example.quiz_application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.speech.tts.TextToSpeech;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -27,7 +28,12 @@ public class quiz1 extends AppCompatActivity {
     TextView tvVoiceResult;
 
     String CorrectResp = "Neil Armstrong";
+    String question = "Qui est le premier homme à marcher sur la Lune ? "
+            + "Les choix sont : Yuri Gagarine. Neil Armstrong. Buzz Aldrin.";
     int score = 0;
+
+    // Text to Speech
+    TextToSpeech tts;
 
     // Launcher reconnaissance vocale
     ActivityResultLauncher<Intent> voiceLauncher = registerForActivityResult(
@@ -41,10 +47,8 @@ public class quiz1 extends AppCompatActivity {
                         String voiceText = matches.get(0);
                         tvVoiceResult.setText("🎤 Vous avez dit : " + voiceText);
 
-                        // Comparer avec la bonne réponse
                         if (voiceText.toLowerCase().contains("neil") ||
                                 voiceText.toLowerCase().contains("armstrong")) {
-
                             score += 1;
                             Toast.makeText(this, "✅ Bonne réponse !",
                                     Toast.LENGTH_SHORT).show();
@@ -53,7 +57,6 @@ public class quiz1 extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
                         }
 
-                        // Passer à quiz2
                         Intent i1 = new Intent(quiz1.this, quiz2.class);
                         i1.putExtra("score", score);
                         startActivity(i1);
@@ -79,7 +82,15 @@ public class quiz1 extends AppCompatActivity {
         btnMic        = findViewById(R.id.btnMic);
         tvVoiceResult = findViewById(R.id.tvVoiceResult);
 
-        // Bouton Next normal
+        // ➕ Init TTS — lecture automatique au démarrage
+        tts = new TextToSpeech(this, status -> {
+            if (status == TextToSpeech.SUCCESS) {
+                tts.setLanguage(Locale.FRENCH);
+                tts.speak(question, TextToSpeech.QUEUE_FLUSH, null, null);
+            }
+        });
+
+        // Bouton Next
         button2.setOnClickListener(v -> {
             if (radioGroup.getCheckedRadioButtonId() == -1) {
                 Toast.makeText(this, "Choisissez une réponse SVP",
@@ -96,23 +107,30 @@ public class quiz1 extends AppCompatActivity {
             }
         });
 
-        // ➕ Bouton Micro
+        // Bouton Micro
         btnMic.setOnClickListener(v -> startVoiceRecognition());
     }
 
-    // 🎤 Lancer la reconnaissance vocale
     private void startVoiceRecognition() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Dites votre réponse...");
-
         try {
             voiceLauncher.launch(intent);
         } catch (Exception e) {
             Toast.makeText(this, "Reconnaissance vocale non disponible",
                     Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (tts != null) {
+            tts.stop();
+            tts.shutdown();
+        }
+        super.onDestroy();
     }
 }
